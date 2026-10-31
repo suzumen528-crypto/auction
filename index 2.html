@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>闇のつり上げオークション ONLINE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&display=swap">
+<style>
+:root{--bg:#07080d;--gold:#ffd700;--green:#00ffcc;--red:#ff2a5f;--vio:#b26bff;--tx:#eceaf6;--dim:#8d90ab;--line:#2a2d46;
+--pn:linear-gradient(160deg,#141629,#0b0c16);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif}
+body{background:
+ radial-gradient(800px 380px at 50% -10%,#2a0f3d 0%,transparent 70%),
+ radial-gradient(600px 300px at 100% 100%,#06302d55 0%,transparent 70%),
+ repeating-linear-gradient(0deg,#ffffff04 0 1px,transparent 1px 40px),
+ repeating-linear-gradient(90deg,#ffffff04 0 1px,transparent 1px 40px),var(--bg)}
+.art{--c:var(--gold)}.rel{--c:var(--red)}.jun{--c:var(--green)}
+#app{max-width:1140px;margin:0 auto;padding:8px 10px 0}
+#hd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px 10px}
+.logo{font-weight:900;font-size:17px;color:var(--gold);letter-spacing:.06em;text-shadow:0 0 12px #ffd70099,0 0 32px #ffd70044}
+.logo small{font-size:11px;color:var(--green);margin-left:6px;letter-spacing:.2em}
+#pips{display:flex;gap:5px;align-items:center}
+#pips i{width:14px;height:5px;border-radius:3px;background:#262944}
+#pips i.d{background:var(--gold);opacity:.55}
+#pips i.n{background:var(--green);box-shadow:0 0 10px var(--green);width:24px}
+#mute{min-height:34px;padding:2px 10px;font-size:15px;border-radius:99px}
+#board{display:grid;grid-template-columns:1fr;gap:12px}
+#main{display:flex;flex-direction:column;gap:12px;min-width:0}
+.box{background:var(--pn);border:1px solid var(--line);border-radius:18px;box-shadow:inset 0 1px 0 #ffffff0d,0 6px 24px #00000066}
+#opps{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pl{background:var(--pn);border:1px solid var(--line);border-radius:18px;padding:10px 12px;position:relative;min-width:0;transition:border-color .25s,box-shadow .25s,opacity .25s}
+.pl.out{opacity:.62}
+.pl.turn{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 22px #ffd70088,inset 0 0 22px #ffd70018}
+.ph{display:flex;align-items:center;gap:8px}
+.av{font-size:26px;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:#0c0d18;border:1px solid var(--line);flex:0 0 auto}
+.pl.turn .av{border-color:var(--gold);box-shadow:0 0 12px #ffd70099}
+.pn{font-weight:800;font-size:13px;line-height:1.25;word-break:break-all}
+.p0 .pn{color:var(--green)}.p1 .pn{color:#ff9f43}.p2 .pn{color:#ff6bf0}
+.stt{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+.chip{font-size:10.5px;padding:1px 8px;border-radius:99px;border:1px solid;white-space:nowrap}
+.chip.turn{color:#07080d;background:var(--gold);border-color:var(--gold);font-weight:800;animation:bk 1.2s ease-in-out infinite}
+.chip.lead{color:var(--green);border-color:var(--green);box-shadow:0 0 8px #00ffcc55}
+.chip.in{color:var(--dim);border-color:var(--line)}.chip.out{color:var(--red);border-color:var(--red)}
+@keyframes bk{50%{opacity:.6}}
+.pc{font-family:Orbitron,monospace;font-weight:900;font-size:28px;color:var(--gold);text-shadow:0 0 14px #ffd70088;margin:6px 0 2px;display:flex;align-items:center;gap:6px}
+.pc.up{animation:up .7s}.pc.down{animation:dn .7s}
+@keyframes up{30%{color:var(--green);transform:scale(1.15)}}@keyframes dn{30%{color:var(--red);transform:scale(.9)}}
+.coin{font-size:18px;filter:drop-shadow(0 0 6px #ffd700aa)}
+.pi{display:flex;flex-wrap:wrap;gap:5px;min-height:34px;align-items:center}
+.ic{position:relative;width:32px;height:32px;display:grid;place-items:center;font-size:18px;border-radius:9px;background:#0b0c15;border:1px solid var(--c);box-shadow:0 0 8px color-mix(in srgb,var(--c) 45%,transparent)}
+.ic.fake::after{content:"偽";position:absolute;right:-4px;top:-6px;font-size:9px;background:var(--red);color:#fff;border-radius:6px;padding:0 3px;font-weight:800}
+.empty{font-size:11px;color:var(--dim)}
+.meter{display:flex;align-items:center;gap:4px;margin-top:6px;font-size:11px;color:var(--dim)}
+.meter i{width:22px;height:6px;border-radius:3px;background:#262944}
+.meter i.on{background:var(--red);box-shadow:0 0 6px var(--red)}
+.meter.ok i.on{background:var(--green);box-shadow:0 0 6px var(--green)}
+.meter em{font-style:normal;margin-left:4px}.meter.ok em{color:var(--green)}.meter:not(.ok) em{color:var(--red)}
+.hc{margin-top:6px;display:flex;align-items:center;gap:3px;font-size:11px;color:var(--dim)}
+.back{width:14px;height:20px;border-radius:3px;background:linear-gradient(135deg,#3a1b66,#14274a);border:1px solid #6a4bb0;display:inline-block}
+#stage{padding:14px 12px 16px;text-align:center;position:relative;overflow:hidden}
+#stage::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 50% 30%,#ffd70014,transparent 70%);pointer-events:none}
+#rd{font-size:12px;color:var(--dim);letter-spacing:.18em}
+#stageIn{display:grid;grid-template-columns:1fr;gap:12px;align-items:center;justify-items:center;margin-top:6px}
+.frame{width:min(100%,330px);padding:14px 12px 12px;border-radius:20px;border:2px solid var(--c);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 14%,#10111c),#0a0b14);box-shadow:0 0 26px color-mix(in srgb,var(--c) 45%,transparent),inset 0 0 22px color-mix(in srgb,var(--c) 12%,transparent)}
+.frame .em{font-size:56px;line-height:1.05;filter:drop-shadow(0 0 14px var(--c))}
+.frame .nm{font-size:20px;font-weight:900;color:#fff;margin:4px 0 6px;text-shadow:0 0 12px var(--c)}
+.badge{display:inline-block;padding:2px 12px;border-radius:99px;font-size:12px;font-weight:800;border:1px solid var(--c);color:var(--c);box-shadow:0 0 10px color-mix(in srgb,var(--c) 50%,transparent)}
+.secrets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.sl{background:#06070c;border:1px dashed #3b3f63;border-radius:12px;padding:6px 4px}
+.sl label{display:block;font-size:10px;color:var(--dim)}
+.sl b{font-size:14px;color:var(--dim)}.sl b.on{color:var(--green);text-shadow:0 0 10px #00ffcc99}
+.pbar{height:4px;border-radius:2px;background:#1a1c30;margin-top:8px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--green);box-shadow:0 0 8px var(--green)}
+#pricebox{width:100%}
+#pricebox .lbl{font-size:11px;letter-spacing:.3em;color:var(--dim)}
+#price{font-family:Orbitron,monospace;font-weight:900;font-size:62px;line-height:1.05;color:var(--gold);text-shadow:0 0 20px #ffd700aa,0 0 50px #ffd70055}
+#price small{font-size:18px;margin-left:4px}
+#price.pulse{animation:pu .35s}
+@keyframes pu{50%{transform:scale(1.14)}}
+#hi{font-size:13px;color:var(--green);min-height:20px;margin-top:2px}
+#turn{font-size:15px;font-weight:800;min-height:22px;margin-top:8px;color:var(--gold);text-shadow:0 0 10px #ffd70088}
+#turn.me{color:var(--green);text-shadow:0 0 12px #00ffcc99;animation:bk 1.2s ease-in-out infinite}
+#tmr{display:flex;align-items:center;gap:8px;max-width:360px;margin:6px auto 0;min-height:16px}
+#tsec{font-family:Orbitron,monospace;font-weight:900;font-size:16px;color:var(--gold);min-width:30px;text-align:right}
+#tmr.low #tsec{color:var(--red);text-shadow:0 0 10px var(--red)}
+.tb{flex:1;height:6px;border-radius:3px;background:#1a1c30;overflow:hidden}
+.tb i{display:block;height:100%;width:0;background:var(--gold);box-shadow:0 0 8px var(--gold)}
+#tmr.low .tb i{background:var(--red);box-shadow:0 0 8px var(--red)}
+#ctrl{display:grid;grid-template-columns:1.7fr 1fr 1.3fr;gap:10px;margin-top:8px}
+button{font:inherit;font-weight:800;font-size:15px;padding:10px 6px;border-radius:14px;border:1.5px solid var(--line);background:#0a0b14;color:var(--tx);cursor:pointer;min-height:58px;touch-action:manipulation;transition:transform .15s,box-shadow .2s,background .2s}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+button:disabled{opacity:.25;cursor:not-allowed;box-shadow:none!important}
+button small{display:block;font-weight:500;font-size:11px;color:var(--dim);margin-top:1px}
+#bBid{color:var(--gold);border-color:var(--gold);background:linear-gradient(180deg,#2a2208,#120f04);box-shadow:0 0 16px #ffd70055,inset 0 0 12px #ffd70022;font-size:18px}
+#bPass{color:var(--red);border-color:var(--red);box-shadow:0 0 12px #ff2a5f44}
+#bWait{color:var(--green);border-color:var(--green);box-shadow:0 0 12px #00ffcc44}
+#ctrl button:not(:disabled):hover{transform:translateY(-2px)}
+#ctrl button:not(:disabled):active{transform:scale(.97)}
+#bar{position:sticky;bottom:0;z-index:5;padding:6px 0 calc(8px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 22%)}
+#bar .t{font-size:11px;color:var(--dim);letter-spacing:.12em;margin:0 4px 0}
+#hand{display:flex;justify-content:center;gap:10px;overflow-x:auto;padding:26px 8px 8px;min-height:210px}
+.card{position:relative;flex:0 0 118px;height:172px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;border-radius:14px;border:2px solid var(--c);background:linear-gradient(165deg,color-mix(in srgb,var(--c) 22%,#14152a) 0%,#0c0d18 55%,color-mix(in srgb,var(--c) 10%,#0a0b14) 100%);box-shadow:0 6px 14px #000a,0 0 12px color-mix(in srgb,var(--c) 40%,transparent);transform:rotate(var(--r,0deg));transform-origin:50% 120%;transition:transform .28s cubic-bezier(.2,.9,.3,1.3),box-shadow .28s,opacity .2s;min-height:0}
+.card .ce{font-size:34px;filter:drop-shadow(0 0 8px var(--c));margin-top:2px}
+.card b{font-size:12.5px;line-height:1.25;color:#fff}
+.card small{font-size:10px;line-height:1.35;color:#b9bcd6;margin:0}
+.card .ck{position:absolute;top:5px;left:7px;font-size:9px;color:var(--c);letter-spacing:.1em;font-weight:800}
+.card:not(:disabled):hover,.card:not(:disabled):focus-visible{transform:translateY(-20px) rotate(0) scale(1.07);z-index:3;box-shadow:0 16px 26px #000c,0 0 26px var(--c)}
+.card:not(:disabled):active{transform:translateY(-10px) scale(1.02)}
+.card:disabled{opacity:.4;filter:saturate(.5)}
+.card.ladder{--c:var(--red)}.card.big{--c:var(--gold)}.card.peek{--c:var(--green)}.card.block{--c:var(--vio)}
+.nocard{align-self:center;color:var(--dim);font-size:13px}
+#logbox{display:flex;flex-direction:column;height:340px;min-height:0;overflow:hidden}
+.lh{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--line);font-weight:800;font-size:13px;color:var(--gold);letter-spacing:.1em}
+#log{overflow-y:auto;padding:8px 14px;font-size:13px;line-height:1.65;flex:1}
+#log div{padding:2px 0;border-bottom:1px dashed #171930;word-break:break-all}
+.lsys{color:var(--dim)}.lb0,.lp0,.lc0{color:var(--green)}.lb1,.lp1,.lc1{color:#ff9f43}.lb2,.lp2,.lc2{color:#ff6bf0}
+.lc0,.lc1,.lc2{font-weight:800}.lwin{color:var(--gold);font-weight:800}.ltag{color:var(--vio);font-weight:800}
+.lrd{color:var(--gold);font-weight:900;margin-top:8px;padding-top:4px!important;border-top:1px solid #ffd70055}
+details{font-size:12px;color:var(--dim);padding:0 6px 8px;line-height:1.7}details summary{cursor:pointer}
+@media(min-width:900px){
+ #board{grid-template-columns:1fr 370px;align-items:start}
+ #logbox{position:sticky;top:10px;height:calc(100vh - 80px);min-height:480px}
+ #stageIn{grid-template-columns:330px 1fr;gap:26px;justify-items:center}
+}
+#fx{position:fixed;left:50%;top:34%;z-index:40;pointer-events:none;text-align:center;opacity:0;transform:translate(-50%,-50%) scale(.6);transition:opacity .5s ease,transform .35s cubic-bezier(.2,1.4,.4,1);white-space:nowrap;max-width:96vw}
+#fx.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#fx .fb{font-size:clamp(28px,8vw,70px);font-weight:900;letter-spacing:.04em}
+#fx .fs{font-size:clamp(13px,3.4vw,20px);margin-top:4px;color:#fff;text-shadow:0 0 10px #000}
+#flash{position:fixed;inset:0;pointer-events:none;opacity:0;z-index:35}
+#flash.go{animation:fl .5s ease-out}
+@keyframes fl{0%{opacity:.35}100%{opacity:0}}
+.sp{position:fixed;left:50%;top:34%;font-size:26px;pointer-events:none;z-index:40;animation:sp .9s ease-out forwards}
+@keyframes sp{to{transform:translate(var(--dx),var(--dy)) scale(.4);opacity:0}}
+#app.shake{animation:sk .5s}
+@keyframes sk{10%,50%,90%{transform:translate(-8px,3px)}30%,70%{transform:translate(8px,-3px)}}
+#ov{position:fixed;inset:0;background:#07080df4;display:flex;overflow-y:auto;padding:16px;z-index:50}
+#ov.off{display:none}
+#res{margin:auto;max-width:580px;width:100%;padding:18px;border-radius:20px;background:var(--pn);border:1px solid var(--gold);box-shadow:0 0 30px #ffd70044}
+#res h2{color:var(--gold);text-align:center;font-size:25px;margin:4px 0 10px;text-shadow:0 0 16px #ffd700aa}
+#res p,#res li{font-size:14px;line-height:1.7}#res ul{padding-left:20px;margin:6px 0 14px}
+.inp{width:100%;font:inherit;font-size:16px;padding:12px;border-radius:12px;border:1.5px solid var(--green);background:#06070c;color:var(--tx);margin-bottom:10px;box-shadow:0 0 12px #00ffcc33}
+#lst{text-align:center;color:var(--green);min-height:24px;margin:10px 0 0}
+.rk{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;background:#0a0b14}
+.rk.first{border-color:var(--gold);box-shadow:0 0 20px #ffd70055}
+.rk .h{display:flex;justify-content:space-between;font-weight:800}
+.rk .tot{font-family:Orbitron,monospace;font-size:24px;color:var(--gold)}
+.rk .d{font-size:13px;color:var(--dim);line-height:1.7;margin-top:4px}.warn{color:var(--red)}
+.big1{width:100%;color:var(--green);border-color:var(--green);font-size:18px;box-shadow:0 0 18px #00ffcc55}
+@media(prefers-reduced-motion:reduce){#app.shake,#flash.go,.sp,.chip.turn,#turn.me,#price.pulse,.pc.up,.pc.down{animation:none}}
+@media(max-width:560px){#price{font-size:50px}.pc{font-size:23px}.av{width:36px;height:36px;font-size:22px}}
+</style>
+</head>
+<body>
+<div id="app">
+ <header id="hd"><div class="logo">闇のつり上げオークション<small>ONLINE</small></div><div id="pips"></div><button id="mute" aria-label="サウンド切替">🔊</button></header>
+ <div id="board">
+  <div id="main">
+   <section id="opps"></section>
+   <section id="stage" class="box">
+    <div id="rd"></div>
+    <div id="stageIn">
+     <div id="item"></div>
+     <div id="pricebox"><div class="lbl">CURRENT BID</div><div id="price">10<small>枚</small></div><div id="hi"></div><div id="turn"></div>
+      <div id="tmr"><div class="tb"><i id="tbar"></i></div><span id="tsec"></span></div>
+      <div id="ctrl"><button id="bBid"></button><button id="bPass">パス</button><button id="bWait"></button></div></div>
+    </div>
+   </section>
+   <section id="me"></section>
+   <section id="bar"><div class="t">YOUR HAND ── 自分の手番にタップで発動（他の人には見えません）</div><div id="hand"></div></section>
+   <details class="box"><summary>ルール・得点早見表</summary>
+    美術品 1/2/3/4個以上＝15/40/80/150pt ／ 遺物 1/2/3個以上＝-20/50/120pt ／ ジャンク 1個5pt＋最多者に+50 ／ 各お宝の「真の価値」も加算 ／ 獲得2個以下は-100pt ／ 持ち時間は1手番10秒（時間切れは自動でパス等）<br>
+    闇の査定員タグ（落札するまで不明）：💸マネロン成功＝払った額の30%が戻る ／ 🎭偽物発覚＝属性がジャンクに劣化 ／ 📦盗品＝効果なし。「裏の顔」で真の価値とタグを3秒だけ覗ける（覗いた本人にだけ表示）。</details>
+  </div>
+  <aside id="logbox" class="box"><div class="lh"><span>詳細ログ</span></div><div id="log" aria-live="polite"></div></aside>
+ </div>
+</div>
+<div id="fx"></div><div id="flash"></div>
+<div id="ov"><div id="res"></div></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const AV=['😎','🎰','🎯'];
+const ATTR={art:'美術品',rel:'遺物',jun:'ジャンク'};
+const TAGS={launder:{n:'💸 マネロン成功',c:'#00ffcc'},fake:{n:'🎭 偽物発覚',c:'#ff2a5f'},stolen:{n:'📦 盗品（通常）',c:'#ffd700'}};
+const CARDS={ladder:{n:'ハシゴ外し',e:'🪜',k:'TRAP',d:'最高入札者のとき5枚払い、自分の入札を取り消してパス'},
+big:{n:'一世一代の吊り上げ',e:'🔥',k:'RAISE',d:'価格を一気に+30枚'},
+peek:{n:'裏の顔（鑑定）',e:'👁',k:'SPY',d:'真の価値と秘密タグを3秒だけ見る。手番は消費しない'},
+block:{n:'闇のブロック',e:'⛓️',k:'BLOCK',d:'次のプレイヤーの手番を1回スキップ'}};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- クライアント状態（サーバーから届いた内容の表示用コピー） ---------- */
+let V={me:0,st:null,hand:[],peek:{until:0,base:0,tag:'stolen'},round:0};
+let LC=[150,150,150],skew=0,pkT=null;
+const sock=io();
+
+/* ---------- audio ---------- */
+let AC=null,muted=false;
+function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}return AC}
+function tone(f,t0,d,type,v){const a=ac();if(!a||muted)return;const o=a.createOscillator(),g=a.createGain(),s=a.currentTime+t0;o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g);g.connect(a.destination);o.start(s);o.stop(s+d)}
+function noise(d,v){const a=ac();if(!a||muted)return;const n=Math.floor(a.sampleRate*d),b=a.createBuffer(1,n,a.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=(Math.random()*2-1)*(1-i/n);const s=a.createBufferSource(),g=a.createGain();g.gain.value=v;s.buffer=b;s.connect(g);g.connect(a.destination);s.start()}
+function sfx(k){
+if(k==='bid')tone(520,0,.08,'square',.05);
+else if(k==='pass')tone(220,0,.12,'sine',.07);
+else if(k==='win'){[523,659,784,1047].forEach((f,i)=>tone(f,i*.12,.28,'triangle',.18));tone(1047,.5,.8,'triangle',.2);tone(784,.5,.8,'triangle',.14)}
+else if(k==='boom'){noise(.7,.45);tone(70,0,.6,'sawtooth',.28)}
+else if(k==='big')[300,400,520,700].forEach((f,i)=>tone(f,i*.06,.16,'sawtooth',.1));
+else if(k==='block'){tone(160,0,.25,'square',.12);tone(120,.12,.3,'square',.12)}
+else if(k==='peek'){tone(900,0,.15,'sine',.1);tone(1200,.1,.2,'sine',.1)}
+else if(k==='coin')[880,1175,1568].forEach((f,i)=>tone(f,i*.07,.2,'triangle',.14))}
+$('mute').onclick=()=>{muted=!muted;$('mute').textContent=muted?'🔇':'🔊'};
+
+/* ---------- 演出（サーバーの fx / fxclear に従い、念のためローカルでも自動消去） ---------- */
+let fxT=null;
+function clearFx(){clearTimeout(fxT);const f=$('fx');f.style.transition='none';f.classList.remove('show');void f.offsetWidth;f.style.transition='';f.innerHTML='';
+$('flash').classList.remove('go');document.querySelectorAll('.sp').forEach(s=>s.remove())}
+function burst(e){for(let i=0;i<16;i++){const s=document.createElement('span');s.className='sp';s.textContent=e;const a=Math.PI*2*i/16,d=110+Math.random()*150;s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1000)}}
+function fx(o){
+clearFx();
+const f=$('fx');f.innerHTML=`<div class="fb" style="color:${esc(o.color)};text-shadow:0 0 18px ${esc(o.color)},0 0 46px ${esc(o.color)}">${esc(o.text)}</div>${o.sub?`<div class="fs">${esc(o.sub)}</div>`:''}`;
+void f.offsetWidth;f.classList.add('show');
+const fl=$('flash');fl.style.background=o.color;void fl.offsetWidth;fl.classList.add('go');
+if(o.shake){const a=$('app');a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake')}
+if(o.em)burst(o.em);if(o.snd)sfx(o.snd);
+fxT=setTimeout(()=>{f.classList.remove('show');fxT=setTimeout(()=>{f.innerHTML=''},600)},1600)}
+
+/* ---------- 描画 ---------- */
+const seatOf=rel=>(V.me+rel)%3;
+function topBid(){const s=V.st;return s&&s.stack.length?s.stack[s.stack.length-1]:null}
+function curMode(){const s=V.st;return s&&s.cur===V.me&&s.mode?s.mode:null}
+function canUse(c){const s=V.st,m=curMode();if(!m)return false;const t=topBid(),ch=s.chips[V.me];
+if(c==='ladder')return !!t&&t.w===V.me&&ch>5&&(m==='wait'||m==='closing');
+if(c==='big')return m==='normal'&&ch>=s.price+30;
+if(c==='peek')return true;
+if(c==='block')return m==='normal'||m==='wait';return false}
+function panel(rel){
+const s=seatOf(rel),st=V.st,t=topBid(),n=st.inv[s].length,turn=st.cur===s&&!st.over;
+let h='';
+if(turn)h+=`<span class="chip turn">${rel===0?'▶ あなたの手番':'💭 考え中…'}</span>`;
+if(!st.conn[s])h+='<span class="chip out">切断中</span>';
+if(!st.active[s])h+='<span class="chip out">パス済</span>';else if(t&&t.w===s)h+='<span class="chip lead">最高入札</span>';else if(!turn)h+='<span class="chip in">参戦中</span>';
+const chg=st.chips[s]>LC[s]?' up':st.chips[s]<LC[s]?' down':'';
+const items=st.inv[s].map(x=>`<span class="ic ${x.k}${x.fake?' fake':''}" title="${esc(x.name)}${x.fake?'（偽物）':''}">${x.em}</span>`).join('')||'<span class="empty">お宝なし</span>';
+const hc=rel===0?`🃏 手札 ${st.hands[s]}枚`:`${'<i class="back"></i>'.repeat(st.hands[s])}<span>${st.hands[s]}枚</span>`;
+return`<div class="pl p${rel}${turn?' turn':''}${!st.active[s]?' out':''}"><div class="ph"><span class="av">${AV[rel]}</span><div><div class="pn">${esc(st.names[s])}${rel===0?'（あなた）':''}</div><div class="stt">${h}</div></div></div>
+<div class="pc${chg}"><span class="coin">🪙</span>${st.chips[s]}</div><div class="pi">${items}</div>
+<div class="meter${n>=3?' ok':''}">${[0,1,2].map(k=>`<i class="${n>k?'on':''}"></i>`).join('')}<em>獲得 ${n}/3${n<=2?'（2個以下は-100）':''}</em></div><div class="hc">${hc}</div></div>`}
+function render(){
+const st=V.st;if(!st)return;
+$('opps').innerHTML=panel(1)+panel(2);$('me').innerHTML=panel(0);LC=st.chips.slice();
+$('pips').innerHTML=Array.from({length:10},(_,k)=>`<i class="${k+1===st.round?'n':k+1<st.round?'d':''}"></i>`).join('');
+const it=st.item,t=topBid();
+if($('item').dataset.r!==String(st.round)){
+ $('item').dataset.r=st.round;
+ $('item').innerHTML=`<div class="frame ${it.k}"><div class="em">${it.em}</div><div class="nm">${esc(it.name)}</div><span class="badge">${ATTR[it.k]}</span>
+ <div class="secrets"><div class="sl"><label>真の価値</label><b id="pkv">？？？</b></div><div class="sl"><label>🕶 闇の査定員タグ</label><b id="pkt">？？？</b></div></div><div class="pbar"><i id="pkbar"></i></div></div>`}
+$('rd').textContent=`ROUND ${st.round} / 10`;
+$('price').innerHTML=`${st.price}<small>枚</small>`;
+$('hi').textContent=t?`最高入札：${st.names[t.w]}（${t.p}枚）`:'まだ誰も入札していない（開始価格10枚）';
+const tn=$('turn');tn.className=st.cur===V.me&&!st.over?'me':'';
+tn.textContent=st.over?'':st.cur===V.me?'▶ あなたの手番です':st.cur>=0?`${st.names[st.cur]} の手番…`:'';
+const m=curMode(),ch=st.chips[V.me];
+$('bBid').disabled=!(m==='normal'&&ch>=st.price+5);
+$('bBid').innerHTML=`入札 ＋5枚<small>→ ${st.price+5}枚</small>`;
+$('bPass').disabled=!(m==='normal'||m==='closingNoStack');
+$('bWait').disabled=!(m==='wait'||m==='closing'||m==='closingNoStack');
+$('bWait').innerHTML=m==='wait'?'様子見<small>手番を終える</small>':m==='closing'||m==='closingNoStack'?'落札確定<small>この価格で買う</small>':'様子見／確定';
+const n=V.hand.length;
+$('hand').innerHTML=n?V.hand.map((c,i)=>{const d=CARDS[c];return`<button class="card ${c}" style="--r:${((i-(n-1)/2)*3).toFixed(1)}deg" data-i="${i}" ${canUse(c)?'':'disabled'}><span class="ck">${d.k}</span><span class="ce">${d.e}</span><b>${d.n}</b><small>${d.d}</small></button>`}).join(''):'<span class="nocard">手札なし（次のラウンドで補充）</span>';
+updatePeek()}
+function updatePeek(){const v=$('pkv'),t=$('pkt'),b=$('pkbar');if(!v)return;
+const left=V.peek.until-performance.now();
+if(left>0){const tg=TAGS[V.peek.tag]||TAGS.stolen;v.textContent=`+${V.peek.base}pt`;v.className='on';t.textContent=tg.n;t.className='on';t.style.color=tg.c;b.style.width=(left/3000*100)+'%'}
+else{v.textContent='？？？';v.className='';t.textContent='？？？';t.className='';t.style.color='';b.style.width='0'}}
+function pulse(){const p=$('price');p.classList.remove('pulse');void p.offsetWidth;p.classList.add('pulse')}
+function addLog(l){const d=document.createElement('div');
+let c=l.cls;if(l.seat!=null&&['b','p','c'].includes(c))c+=(l.seat-V.me+3)%3;
+d.className='l'+c;d.textContent=l.text;const box=$('log');box.appendChild(d);box.scrollTop=box.scrollHeight}
+
+/* 残り時間バー（サーバーの deadline を元に表示のみ。判定はサーバー） */
+setInterval(()=>{const st=V.st,tm=$('tmr');
+if(!st||!st.deadline||st.cur<0||st.over){$('tbar').style.width='0';$('tsec').textContent='';tm.className='';return}
+const rem=Math.max(0,(st.deadline-(Date.now()+skew))/1000);
+$('tbar').style.width=Math.min(100,rem/10*100)+'%';$('tsec').textContent=Math.ceil(rem);tm.className=rem<=3?'low':''
+if(V.peek.until)updatePeek()},100);
+
+/* ---------- 操作 → サーバーへ送信 ---------- */
+function send(a){if(!curMode())return;sock.emit('action',a);V.st.mode=null;render()}   // 二重送信防止のため即ロック
+$('bBid').onclick=()=>{if(curMode()==='normal')send({t:'raise'})};
+$('bPass').onclick=()=>{const m=curMode();if(m==='normal'||m==='closingNoStack')send({t:'pass'})};
+$('bWait').onclick=()=>{const m=curMode();if(m==='wait')send({t:'wait'});else if(m==='closing'||m==='closingNoStack')send({t:'confirm'})};
+$('hand').addEventListener('click',e=>{const b=e.target.closest('.card');if(!b)return;const c=V.hand[+b.dataset.i];if(!c||!canUse(c))return;
+if(c==='peek')sock.emit('peek');else send({t:'card',c})});
+
+/* ---------- ロビー ---------- */
+const LOBBY=`<h2>闇のつり上げオークション<br><small style="font-size:13px;color:var(--green);letter-spacing:.3em">ONLINE</small></h2>
+<ul><li>3人が集まると自動で開始。全10ラウンド、チップ150枚、手札3枚。</li>
+<li>手番は10秒。入札／パス／カード。最後に残った人が落札。</li>
+<li>🕶 お宝の秘密タグ（マネロン／偽物／盗品）は落札するまで不明。</li></ul>
+<input class="inp" id="nm" maxlength="10" placeholder="ニックネーム（10文字まで）" autocomplete="off">
+<button class="big1" id="joinBtn">対戦相手を探す</button><p id="lst"></p>`;
+function mountLobby(msg){$('res').innerHTML=LOBBY;$('nm').value=localStorage.getItem('yn')||'';$('lst').textContent=msg||'';$('joinBtn').onclick=joinQueue;$('ov').classList.remove('off')}
+function joinQueue(){const n=$('nm').value.trim()||'プレイヤー';localStorage.setItem('yn',n);ac();$('joinBtn').disabled=true;$('lst').textContent='マッチング中…';
+ sock.emit('join',{name:n,token:sessionStorage.getItem('yt')})}
+function showResult(d){
+const rk=[...d.results].sort((a,b)=>b.total-a.total);
+$('res').innerHTML=`<h2>${rk[0].seat===V.me?'🏆 あなたの勝ち！':'💀 '+esc(rk[0].name)+' の勝ち'}</h2>
+<p style="text-align:center">${d.bk>=0?`${esc(d.results[d.bk].name)}が破産し、ゲーム強制終了。`:'全10ラウンド終了。'}</p>`+
+rk.map((o,n)=>`<div class="rk${n?'':' first'}"><div class="h"><span>${n+1}位　${esc(o.name)}${o.seat===V.me?'（あなた）':''}</span><span class="tot">${o.total}</span></div>
+<div class="d">残チップ ${o.chips}<br>美術品×${o.c.art}：${o.art}pt／遺物×${o.c.rel}：${o.rel}pt／ジャンク×${o.c.jun}：${o.jun}pt${o.jb?'（最多+50含む）':''}<br>真の価値の合計：${o.base}pt${o.pen?`<br><b class="warn">市場追放ペナルティ -100（獲得${o.items.length}個）</b>`:''}<br>${o.items.map(x=>x.em+esc(x.name)+(x.fake?'（偽物）':'')).join('、')||'お宝なし'}</div></div>`).join('')+'<button class="big1" id="again">もう一度遊ぶ（新しい対戦へ）</button>';
+$('ov').classList.remove('off');$('again').onclick=()=>{V.st=null;mountLobby()}}
+
+/* ---------- サーバーからの受信 ---------- */
+sock.on('connect',()=>{const tk=sessionStorage.getItem('yt');if(tk)sock.emit('join',{name:localStorage.getItem('yn')||'',token:tk,rejoinOnly:true})});
+sock.on('disconnect',()=>addLog({text:'⚠ サーバーとの接続が切れました。再接続を試みています…',cls:'sys'}));
+sock.on('joined',d=>sessionStorage.setItem('yt',d.token));
+sock.on('lobby',()=>{if(!V.st&&!$('joinBtn'))mountLobby()});
+sock.on('queue',d=>{if(!$('lst'))mountLobby();$('joinBtn').disabled=true;$('lst').textContent=`対戦相手を待っています… ${d.count} / 3 人`});
+sock.on('start',d=>{V.me=d.seat;V.hand=[];V.peek.until=0;V.round=0;LC=[150,150,150];$('log').innerHTML='';$('item').dataset.r='';$('ov').classList.add('off');clearFx()});
+sock.on('state',st=>{skew=st.now-Date.now();
+ if(st.round!==V.round){V.round=st.round;V.peek.until=0}
+ if(V.st&&st.price>V.st.price&&st.round===V.st.round)pulse();
+ V.st=st;render()});
+sock.on('hand',h=>{V.hand=h;if(V.st)render()});
+sock.on('peek',d=>{V.peek={until:performance.now()+d.ms,base:d.base,tag:d.tag};updatePeek()});   // 本人にだけ届く
+sock.on('log',addLog);
+sock.on('logs',a=>{$('log').innerHTML='';a.forEach(addLog)});
+sock.on('fx',fx);sock.on('fxclear',clearFx);sock.on('sfx',sfx);
+sock.on('errmsg',m=>addLog({text:'⚠ '+m,cls:'sys'}));
+sock.on('over',d=>{if(V.st){V.st.over=true;render()}setTimeout(()=>showResult(d),1200)});
+mountLobby();
+</script>
+</body>
+</html>
